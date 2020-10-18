@@ -1,5 +1,6 @@
 package main
 
+// Importing Libraries
 import (
 	"fmt"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	
 )
 
 var client *mongo.Client
@@ -34,26 +36,28 @@ type Meeting struct {
 }
 
 
-
+// Meetings Controller
 func meetings(w http.ResponseWriter, r *http.Request){
 	switch r.Method {
 		case "GET":     
-		
-			// endstr := ( )
-			startstr := r.URL.Query().Get("start")
-			endstr := r.URL.Query().Get("end")
+
+			// Storing the Queries params in variables
+			startStr := r.URL.Query().Get("start")
+			endStr := r.URL.Query().Get("end")
 			participant:= r.URL.Query().Get("participant")
 
-			//Route with start and end as parameters
-			if((startstr != "" && endstr != "")&& participant == ""){
-				start1, err :=  strconv.Atoi(startstr)
+			//For start and end query params
+			if((startStr != "" && endStr != "")&& participant == ""){
+				start, err :=  strconv.Atoi(startStr)
 				if err != nil {
 					fmt.Println(err)
 					os.Exit(2)
 				}
-				end1, err := strconv.Atoi(endstr)
+				end, err := strconv.Atoi(endStr)
 				if err != nil {
 					fmt.Println(err)
+					os.Exit(2)
+
 				} 
 				client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 				if err != nil {
@@ -65,19 +69,21 @@ func meetings(w http.ResponseWriter, r *http.Request){
 					log.Fatal(err)
 				}
 				defer client.Disconnect(ctx)
-				var m1 []Meeting
-				quickstartDatabase := client.Database("MeetingsApi")
-				podcastsCollection := quickstartDatabase.Collection("meetings_test")
-	
-				filterCursor, err := podcastsCollection.Find(ctx, bson.D{{"start_Time", bson.D{{"$gte", start1}}},{"end_Time", bson.D{{"$lte", end1}}}})
+				var meetings []Meeting
+				meetingApiDatabase := client.Database("MeetingsApi")
+				meetingsCollection := meetingApiDatabase.Collection("meetings_test")
+				filterCursor, err := meetingsCollection.Find(ctx, bson.D{{"start_Time", bson.D{{"$gte", start}}},{"end_Time", bson.D{{"$lte", end}}}})
 				if err != nil {
 					log.Fatal(err)
 				}
-				if err = filterCursor.All(ctx, &m1); err != nil {
+				if err = filterCursor.All(ctx, &meetings); err != nil {
 					log.Fatal(err)
 				}
-				json.NewEncoder(w).Encode(m1)
-			} else if( participant!="" &&(startstr=="" && endstr =="")){
+				json.NewEncoder(w).Encode(meetings)
+
+				
+			// For participant params
+			} else if( participant!="" &&(startStr=="" && endStr =="")){
 				fmt.Println(participant)
 				client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 				if err != nil {
@@ -89,18 +95,18 @@ func meetings(w http.ResponseWriter, r *http.Request){
 					log.Fatal(err)
 				}
 				defer client.Disconnect(ctx)
-				var m1 []Meeting
-				quickstartDatabase := client.Database("MeetingsApi")
-				podcastsCollection := quickstartDatabase.Collection("meetings_test")
+				var meetings []Meeting
+				meetingApiDatabase := client.Database("MeetingsApi")
+				meetingsCollection := meetingApiDatabase.Collection("meetings_test")
 	
-				filterCursor, err := podcastsCollection.Find(ctx, bson.D{{"participants",bson.D{{"$elemMatch",bson.D{{"email",participant}}}}}})
+				filterCursor, err := meetingsCollection.Find(ctx, bson.D{{"participants",bson.D{{"$elemMatch",bson.D{{"email",participant}}}}}})
 				if err != nil {
 					log.Fatal(err)
 				}
-				if err = filterCursor.All(ctx, &m1); err != nil {
+				if err = filterCursor.All(ctx, &meetings); err != nil {
 					log.Fatal(err)
 				}
-				json.NewEncoder(w).Encode(m1)
+				json.NewEncoder(w).Encode(meetings)
 			} else{
 				fmt.Fprintf(w, "pass the right parameters")
 			}
@@ -115,7 +121,6 @@ func meetings(w http.ResponseWriter, r *http.Request){
 			}
 			m.Creation_Timestamp = time.Now()
 			fmt.Printf("%+v\n", m)
-			
 			client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 			if err != nil {
 				log.Fatal(err)
@@ -126,28 +131,45 @@ func meetings(w http.ResponseWriter, r *http.Request){
 				log.Fatal(err)
 			}
 			defer client.Disconnect(ctx)
-			quickstartDatabase := client.Database("MeetingsApi")
-			podcastsCollection := quickstartDatabase.Collection("meetings_test")
-			// episodesCollection := quickstartDatabase.Collection("episodes")
-			podcastResult, err := podcastsCollection.InsertOne(ctx, m)
-			if err != nil {
-				log.Fatal(err)
+			meetingApiDatabase := client.Database("MeetingsApi")
+			meetingsCollection := meetingApiDatabase.Collection("meetings_test")
+			var m1 []Meeting
+			noCLashing :=0
+				for i, s := range m.Participants {
+					fmt.Println(i, s)
+					filterCursor, err := meetingsCollection.Find(ctx, bson.D{{"start_Time", bson.D{{"$gte", m.Start_Time }}},{"end_Time", bson.D{{"$lte",  m.End_Time }}},{"participants",bson.D{{"$elemMatch",bson.D{{"email",s.Email},{"rsvp","yes"}}}}}})
+					if err != nil {
+						log.Fatal(err)
+					}
+					if err = filterCursor.All(ctx, &m1); err != nil {
+						log.Fatal(err)
+					}
+					fmt.Println(m1)
+					if(m1!=nil){
+						fmt.Fprintf(w,"One of the participants with email "+s.Email+" timings are clashing")
+						noCLashing=1
+						break;
+					}
+				}
+			if(noCLashing==0){
+				_, err := meetingsCollection.InsertOne(ctx, m)
+				if err != nil {
+					log.Fatal(err)
+				}
+				json.NewEncoder(w).Encode(m)
+
+			
 			}
-			json.NewEncoder(w).Encode(podcastResult)
 		default:
 			fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
 		}
 
 }
 
-
+// Meeting Controller
 func meeting(w http.ResponseWriter, r *http.Request){
 	switch r.Method {
 		case "GET":     
-			// vars := mux.Vars(r)
-			// varId := vars["id"]  
-			// varId  := "path.Base(r.URL.Path)"
-			// fmt.Println(primitive.ObjectIDFromHex(varId))
 			varId,err := primitive.ObjectIDFromHex(path.Base(r.URL.Path))
 			if err != nil {
 					log.Fatal(err)
@@ -162,14 +184,11 @@ func meeting(w http.ResponseWriter, r *http.Request){
 			if err != nil {
 				log.Fatal(err)
 			}
-
 			defer client.Disconnect(ctx)
-			// var episodesFiltered []bson.M
-			quickstartDatabase := client.Database("MeetingsApi")
-			podcastsCollection := quickstartDatabase.Collection("meetings_test")
+			meetingApiDatabase := client.Database("MeetingsApi")
+			meetingsCollection := meetingApiDatabase.Collection("meetings_test")
 			fmt.Println( "Not post yet done")
-
-			if err = podcastsCollection.FindOne(ctx,bson.M{"_id": varId}).Decode(&m); err != nil {
+			if err = meetingsCollection.FindOne(ctx,bson.M{"_id": varId}).Decode(&m); err != nil {
 				log.Fatal(err)
 			}
 			json.NewEncoder(w).Encode(m)
@@ -183,10 +202,10 @@ func meeting(w http.ResponseWriter, r *http.Request){
 
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Fprintf(w,"Homepage Endpoint Hit")
+	fmt.Fprintf(w,"Welcome to the MeetingsAPI")
 }
 
+// Routing
 func handleRequests(){
 	http.HandleFunc("/meeting/",meeting)
 	http.HandleFunc("/",homePage)
@@ -195,13 +214,8 @@ func handleRequests(){
 }
 
 func main(){
-
 	fmt.Println("Starting the application...")
 	fmt.Println(time.Now())
-
-	// ctx,_ := context.WithTimeout(context.Background(),10*time.Second)
-	// client,_ := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
-
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
     if err != nil {
         log.Fatal(err)
@@ -211,7 +225,7 @@ func main(){
     if err != nil {
         log.Fatal(err)
     }
-    defer client.Disconnect(ctx)
-
+	defer client.Disconnect(ctx)
+	
 	handleRequests()
 }
