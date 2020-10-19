@@ -17,7 +17,7 @@
     <img alt="Golang" title="Golang" src="https://golang.org/lib/godoc/images/go-logo-blue.svg" height="50px">
   </a>
   &nbsp;&nbsp;&nbsp;
-  <a href="">
+  <a href="https://www.mongodb.com/">
     <img alt="MongoDB" title="MongoDB" src="https://webassets.mongodb.com/_com_assets/cms/MongoDB_Logo_FullColorBlack_RGB-4td3yuxzjs.png" height="50px">
   </a>
 </p>
@@ -40,17 +40,8 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Introduction
+This is a basic version of managing API. This is my task done for appointy internship using golang and mongodb.
 
-[![Build Status](https://img.shields.io/travis/gitpoint/git-point.svg?style=flat-square)](https://travis-ci.org/gitpoint/git-point)
-[![Coveralls](https://img.shields.io/coveralls/github/gitpoint/git-point.svg?style=flat-square)](https://coveralls.io/github/gitpoint/git-point)
-[![All Contributors](https://img.shields.io/badge/all_contributors-73-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
-[![Gitter chat](https://img.shields.io/badge/chat-on_gitter-008080.svg?style=flat-square)](https://gitter.im/git-point)
-
-View repository and user information, control your notifications and even manage your issues and pull requests. Built with React Native, GitPoint is one of the most feature-rich unofficial GitHub clients that is 100% free.
-
-**Available for both iOS and Android.**
 
 <p align="center">
   <img src = "http://i.imgur.com/HowF6aM.png" width=350>
@@ -60,23 +51,27 @@ View repository and user information, control your notifications and even manage
 
 A few of the things you can do with GitPoint:
 
-* View user activity feed
-* Communicate on your issue and pull request conversations
-* Close or lock issues
-* Apply labels and assignees
-* Review and merge pull requests
-* Create new issues
-* Star, watch and fork repositories
-* Control your unread and participating notifications
-* Easily search for any user or repository
+* Schedules Meetings
+* Find Meetings between time range
+* Create non overlapping meetings
+* Thread Safe
 
 <p align="center">
   <img src = "http://i.imgur.com/IkSnFRL.png" width=700>
 </p>
+<br />
 
-<p align="center">
-  <img src = "http://i.imgur.com/0iorG20.png" width=700>
-</p>
+
+## Running Locally
+
+Make sure you have [Go](https://golang.org/) and the [Mongodb](https://www.mongodb.com/) installed.
+
+```sh
+git clone https://github.com/SreemanthG/Meatings-API-Appointy.git
+cd meetings-api-appointy
+go get
+go run main.go
+```
 
 ## Feedback
 
