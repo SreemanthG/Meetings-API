@@ -30,12 +30,10 @@
 
 - [Introduction](#introduction)
 - [Features](#features)
+- [Running Locally](#running-locally)
+- [RESTful URLs](#restful-urls)
+- [Requests and Responses](#requests-and-responses)
 - [Feedback](#feedback)
-- [Contributors](#contributors)
-- [Build Process](#build-process)
-- [Backers](#backers-)
-- [Sponsors](#sponsors-)
-- [Acknowledgments](#acknowledgments)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -43,9 +41,6 @@
 This is a basic version of managing API. This is my task done for appointy internship using golang and mongodb.
 
 
-<p align="center">
-  <img src = "http://i.imgur.com/HowF6aM.png" width=350>
-</p>
 
 ## Features
 
@@ -57,9 +52,7 @@ A few of the things you can do with GitPoint:
 * List all meetings of a participant
 * Thread Safe
 
-<p align="center">
-  <img src = "http://i.imgur.com/IkSnFRL.png" width=700>
-</p>
+
 <br />
 
 
@@ -96,12 +89,12 @@ go run main.go
 * List all meetings of a participant:
     * GET http://localhost/meetings?participant=examplename
 
-## Request & Response Examples
+## Requests and Responses
 
 ### API Resources
 
   - [POST /meetings](#post-meetings)
-  - [GET /meetings/[id]](#get-meetingsid)
+  - [GET /meetings/[id]](#get-meetings)
   - [GET /meetings?start=start=[start time here]&end=[end time here]](#post-magazinesidarticles)
   - [GET /meetings?participant=[email]](#post-magazinesidarticles)
   
