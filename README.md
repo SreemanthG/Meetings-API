@@ -47,7 +47,7 @@ This is a basic version of API managing and scheduling meetings. This is my task
 
 ## Features
 
-A few of the things you can do with GitPoint:
+A few of the things you can do with MeetAPI:
 
 * Schedules Meetings
 * Lists all meetings within a time frame
