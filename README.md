@@ -36,9 +36,12 @@
 - [Feedback](#feedback)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<br />
+
+
 
 ## Introduction
-This is a basic version of managing API. This is my task done for appointy internship using golang and mongodb.
+This is a basic version of API managing and scheduling meetings. This is my task done for appointy internship using golang and mongodb.
 
 
 
@@ -66,6 +69,9 @@ cd meetings-api-appointy
 go get
 go run main.go
 ```
+<br />
+
+
 
 ## RESTful URLs
 
@@ -88,6 +94,9 @@ go run main.go
     * GET http://localhost/meetings?start=12-12-2020&end=12-12-2020
 * List all meetings of a participant:
     * GET http://localhost/meetings?participant=examplename
+<br />
+
+
 
 ## Requests and Responses
 
