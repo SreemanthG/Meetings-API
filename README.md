@@ -167,6 +167,7 @@ Response body:
 ### GET /meetings?start=[start time here]&end=[end time here]
 
 Example: http://localhost/meetings?start=1602255600&end=1603202400
+
 Response body:
     
         [
