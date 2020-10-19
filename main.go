@@ -81,7 +81,7 @@ func meetings(w http.ResponseWriter, r *http.Request){
 				}
 				json.NewEncoder(w).Encode(meetings)
 
-				
+
 			// For participant params
 			} else if( participant!="" &&(startStr=="" && endStr =="")){
 				fmt.Println(participant)
@@ -152,11 +152,11 @@ func meetings(w http.ResponseWriter, r *http.Request){
 					}
 				}
 			if(noCLashing==0){
-				_, err := meetingsCollection.InsertOne(ctx, m)
+				meetingResult, err := meetingsCollection.InsertOne(ctx, m)
 				if err != nil {
 					log.Fatal(err)
 				}
-				json.NewEncoder(w).Encode(m)
+				json.NewEncoder(w).Encode(meetingResult)
 
 			
 			}
