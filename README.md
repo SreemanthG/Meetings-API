@@ -299,6 +299,39 @@ Response body:
               "creation_Timestamp": "2020-10-18T17:56:08.676Z"
           }
         ]    
+        
+    
+### GET /meetings?participant=[email]&offset=[]&offset=[offset]&limit=[limit]
+Example: http://localhost/meetings?participant=[email]&limit=1&offset=0
+
+Response body:
+
+       [
+          {
+              "_id": "5f8c81b85fe813d139bcb1bf",
+              "title": "My new test Meeting",
+              "participants": [
+                  {
+                      "name": "sreemanth",
+                      "email": "sreemanth@gmail.com",
+                      "rsvp": "yes"
+                  },
+                  {
+                      "name": "daksh",
+                      "email": "daksh@gmail.com",
+                      "rsvp": "no"
+                  },
+                  {
+                      "name": "pranav",
+                      "email": "pranav@gmail.com",
+                      "rsvp": "maybe"
+                  }
+              ],
+              "start_Time": 1602255600,
+              "end_Time": 1602273600,
+              "creation_Timestamp": "2020-10-18T17:56:08.676Z"
+          }
+      ]    
 <br />
 
 
