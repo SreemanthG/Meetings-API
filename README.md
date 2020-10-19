@@ -110,7 +110,7 @@ go run main.go
 ### POST /meetings
 
 Example: http://localhost/meetings
-
+Note: start_Time, end_Time should be in UNIX format
 Request body(JSON):
     
       {
