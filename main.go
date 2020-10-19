@@ -42,12 +42,12 @@ func meetings(w http.ResponseWriter, r *http.Request){
     defer lock.Unlock()
 	switch r.Method {
 		case "GET":     
-
 			// Storing the Queries params in variables
 			startStr := r.URL.Query().Get("start")
 			endStr := r.URL.Query().Get("end")
 			participant:= r.URL.Query().Get("participant")
-
+			offset:= r.URL.Query().Get("offset")
+			limit := r.URL.Query().Get("limit")
 			//For start and end query params
 			if((startStr != "" && endStr != "")&& participant == ""){
 				start, err :=  strconv.Atoi(startStr)
@@ -71,6 +71,9 @@ func meetings(w http.ResponseWriter, r *http.Request){
 					log.Fatal(err)
 				}
 				defer client.Disconnect(ctx)
+				
+
+
 				var meetings []Meeting
 				meetingApiDatabase := client.Database("MeetingsApi")
 				meetingsCollection := meetingApiDatabase.Collection("meetings_test")
@@ -81,7 +84,7 @@ func meetings(w http.ResponseWriter, r *http.Request){
 				if err = filterCursor.All(ctx, &meetings); err != nil {
 					log.Fatal(err)
 				}
-				json.NewEncoder(w).Encode(meetings)
+				json.NewEncoder(w).Encode(meetings[9])
 
 
 			// For participant params
@@ -96,12 +99,30 @@ func meetings(w http.ResponseWriter, r *http.Request){
 				if err != nil {
 					log.Fatal(err)
 				}
+				opts := options.Find()
+				if(offset!=""&&limit!=""){
+					skip,err := strconv.Atoi(offset)
+					if err != nil {
+						log.Fatal(err)
+					}
+					limit,err := strconv.Atoi(limit)
+					if err != nil {
+						log.Fatal(err)
+					}
+					opts.SetLimit(int64(limit))
+					opts.SetSkip(int64(skip))
+				}
+			
+					// opts := options.FindOptions{
+					// 	Skip: i(skip),
+					// 	Limit: (limit),
+					//   }
 				defer client.Disconnect(ctx)
 				var meetings []Meeting
 				meetingApiDatabase := client.Database("MeetingsApi")
 				meetingsCollection := meetingApiDatabase.Collection("meetings_test")
 	
-				filterCursor, err := meetingsCollection.Find(ctx, bson.D{{"participants",bson.D{{"$elemMatch",bson.D{{"email",participant}}}}}})
+				filterCursor, err := meetingsCollection.Find(ctx, bson.D{{"participants",bson.D{{"$elemMatch",bson.D{{"email",participant}}}}}},opts)
 				if err != nil {
 					log.Fatal(err)
 				}
