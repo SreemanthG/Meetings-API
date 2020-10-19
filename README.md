@@ -52,8 +52,9 @@ This is a basic version of managing API. This is my task done for appointy inter
 A few of the things you can do with GitPoint:
 
 * Schedules Meetings
-* Find Meetings between time range
+* Lists all meetings within a time frame
 * Create non overlapping meetings
+* List all meetings of a participant
 * Thread Safe
 
 <p align="center">
@@ -73,6 +74,218 @@ go get
 go run main.go
 ```
 
+## RESTful URLs
+
+### Good URL examples
+* Schedule a meeting:
+    * post http://localhost/meetings
+* Get a meeting using id:
+    * GET http://localhost/meeting/5f8c88ed089352ae924e7c84
+* List all meetings within a time frame:
+    * GET http://localhost/meetings?start=1602255600&end=1602255600
+* List all meetings of a participant:
+    * GET http://localhost/meetings?participant=example@gmail.com
+
+### Bad URL examples
+* Schedule a meeting:
+    * post http://localhost/meetings/213112
+* Get a meeting using id:
+    * GET http://localhost/meeting/5f8c88ed089352ae924e7c84/5f8c88ed089352ae924e7c84
+* List all meetings within a time frame:
+    * GET http://localhost/meetings?start=12-12-2020&end=12-12-2020
+* List all meetings of a participant:
+    * GET http://localhost/meetings?participant=examplename
+
+## Request & Response Examples
+
+### API Resources
+
+  - [POST /meetings](#post-meetings)
+  - [GET /meetings/[id]](#get-meetingsid)
+  - [GET /meetings?start=start=[start time here]&end=[end time here]](#post-magazinesidarticles)
+  - [GET /meetings?participant=[email]](#post-magazinesidarticles)
+  
+### POST /meetings
+
+Example: http://localhost/meetings
+
+Request body(JSON):
+    
+      {
+      
+        "title": "My new Meeting",
+        "participants": [
+            {"name":"sreemanth1","email":"sreemanth1@gmail.com","rsvp":"yes"},
+            {"name":"sreemanth2","email":"sreemanth2@gmail.com","rsvp":"yes"}
+        ],
+        "start_Time": 1603188000,
+        "end_Time": 1603202400
+      
+      }
+
+
+Response body:
+<br />
+      
+
+Success:
+
+      {
+      "InsertedID":"5f8d36b26199472986f1a690"
+      }
+
+Failure:
+
+      One of the participants with email sreemanth1@gmail.com timings are clashing
+     
+### GET /meeting/[id]
+
+Example: http://localhost/meeting/5f8d36b26199472986f1a690
+
+Response body:
+    
+      {
+        "_id": "5f8d36b26199472986f1a690",
+        "title": "My new Meeting",
+        "participants": [
+            {
+                "name": "sreemanth1",
+                "email": "sreemanth1@gmail.com",
+                "rsvp": "yes"
+            },
+            {
+                "name": "sreemanth2",
+                "email": "sreemanth2@gmail.com",
+                "rsvp": "yes"
+            }
+        ],
+        "start_Time": 1603188000,
+        "end_Time": 1603202400,
+        "creation_Timestamp": "2020-10-19T06:48:18.325Z"
+      }
+
+### GET /meetings?start=[start time here]&end=[end time here]
+
+Example: http://localhost/meetings?start=1602255600&end=1603202400
+Response body:
+    
+        [
+          {
+              "_id": "5f8c81b85fe813d139bcb1bf",
+              "title": "My new test Meeting",
+              "participants": [
+                  {
+                      "name": "sreemanth",
+                      "email": "sreemanth@gmail.com",
+                      "rsvp": "yes"
+                  },
+                  {
+                      "name": "daksh",
+                      "email": "daksh@gmail.com",
+                      "rsvp": "no"
+                  },
+                  {
+                      "name": "pranav",
+                      "email": "pranav@gmail.com",
+                      "rsvp": "maybe"
+                  }
+              ],
+              "start_Time": 1602255600,
+              "end_Time": 1602273600,
+              "creation_Timestamp": "2020-10-18T17:56:08.676Z"
+          },
+          {
+              "_id": "5f8c88ed089352ae924e7c84",
+              "title": "My new test2 Meeting",
+              "participants": [
+                  {
+                      "name": "daksh",
+                      "email": "daksh@gmail.com",
+                      "rsvp": "no"
+                  },
+                  {
+                      "name": "pranav",
+                      "email": "pranav@gmail.com",
+                      "rsvp": "maybe"
+                  }
+              ],
+              "start_Time": 1602255600,
+              "end_Time": 1602273600,
+              "creation_Timestamp": "2020-10-18T18:26:53.235Z"
+          },
+          {
+              "_id": "5f8ca61c67bd98c1c301d19b",
+              "title": "My new test2 Meeting",
+              "participants": [
+                  {
+                      "name": "daksh",
+                      "email": "daksh@gmail.com",
+                      "rsvp": "yes"
+                  },
+                  {
+                      "name": "pranav",
+                      "email": "pranav@gmail.com",
+                      "rsvp": "yes"
+                  }
+              ],
+              "start_Time": 1602255600,
+              "end_Time": 1602273600,
+              "creation_Timestamp": "2020-10-18T20:31:23.395Z"
+          },
+          {
+              "_id": "5f8d36b26199472986f1a690",
+              "title": "My new Meeting",
+              "participants": [
+                  {
+                      "name": "sreemanth1",
+                      "email": "sreemanth1@gmail.com",
+                      "rsvp": "yes"
+                  },
+                  {
+                      "name": "sreemanth2",
+                      "email": "sreemanth2@gmail.com",
+                      "rsvp": "yes"
+                  }
+              ],
+              "start_Time": 1603188000,
+              "end_Time": 1603202400,
+              "creation_Timestamp": "2020-10-19T06:48:18.325Z"
+          }
+        ]
+     
+### GET /meetings?participant=[email]
+Example: http://localhost/meetings?participant=[email]
+
+Response body:
+
+        [
+          {
+              "_id": "5f8c81b85fe813d139bcb1bf",
+              "title": "My new test Meeting",
+              "participants": [
+                  {
+                      "name": "sreemanth",
+                      "email": "sreemanth@gmail.com",
+                      "rsvp": "yes"
+                  },
+                  {
+                      "name": "daksh",
+                      "email": "daksh@gmail.com",
+                      "rsvp": "no"
+                  },
+                  {
+                      "name": "pranav",
+                      "email": "pranav@gmail.com",
+                      "rsvp": "maybe"
+                  }
+              ],
+              "start_Time": 1602255600,
+              "end_Time": 1602273600,
+              "creation_Timestamp": "2020-10-18T17:56:08.676Z"
+          }
+        ]    
+        
+     
 ## Feedback
 
 Feel free to send us feedback on [Twitter](https://twitter.com/gitpointapp) or [file an issue](https://github.com/gitpoint/git-point/issues/new). Feature requests are always welcome. If you wish to contribute, please take a quick look at the [guidelines](./CONTRIBUTING.md)!
