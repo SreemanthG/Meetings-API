@@ -41,7 +41,7 @@
 
 
 ## Introduction
-This is a basic version of managing API. This is my task done for appointy internship using golang and mongodb.
+This is a basic version of API managing and scheduling meetings. This is my task done for appointy internship using golang and mongodb.
 
 
 
