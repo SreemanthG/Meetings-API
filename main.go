@@ -11,15 +11,15 @@ import (
 	"time"
 	"strconv"
 	"os"
+	"sync"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	
 )
 
 var client *mongo.Client
-
+var lock sync.Mutex	
 type Participant struct {
 	// ID primitive.ObjectID ` bson:"_id,omitempty" json:"_id,omitempty"`
 	Name string `bson:"name"  json:"name"`
@@ -38,6 +38,8 @@ type Meeting struct {
 
 // Meetings Controller
 func meetings(w http.ResponseWriter, r *http.Request){
+	lock.Lock()
+    defer lock.Unlock()
 	switch r.Method {
 		case "GET":     
 
@@ -168,6 +170,8 @@ func meetings(w http.ResponseWriter, r *http.Request){
 
 // Meeting Controller
 func meeting(w http.ResponseWriter, r *http.Request){
+	lock.Lock()
+    defer lock.Unlock()
 	switch r.Method {
 		case "GET":     
 			varId,err := primitive.ObjectIDFromHex(path.Base(r.URL.Path))
@@ -214,6 +218,7 @@ func handleRequests(){
 }
 
 func main(){
+	
 	fmt.Println("Starting the application...")
 	fmt.Println(time.Now())
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
